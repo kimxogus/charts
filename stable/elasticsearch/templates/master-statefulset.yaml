@@ -114,17 +114,13 @@ spec:
           - /bin/sh
           - -c
           - >
-            if [[ -z $NODE_MASTER || "$NODE_MASTER" = "true" ]] ; then
-              # Run ES as a background task, and forward SIGTERM to it, then wait for it to exit
-              trap 'kill $(jobs -p)' SIGTERM
-              /usr/local/bin/docker-entrypoint.sh elasticsearch &
-              wait
-              # now keep the pod alive for 30s after ES dies so that we will refuse connections from
-              # the new master rather than them needing to time  out
-              sleep 30
-            else
-              exec /usr/local/bin/docker-entrypoint.sh elasticsearch
-            fi
+            # Run ES as a background task, and forward SIGTERM to it, then wait for it to exit
+            trap 'kill $(jobs -p)' SIGTERM
+            /usr/local/bin/docker-entrypoint.sh elasticsearch &
+            wait
+            # now keep the pod alive for 30s after ES dies so that we will refuse connections from
+            # the new master rather than them needing to time  out
+            sleep 30
         env:
         - name: NODE_DATA
           value: "false"
