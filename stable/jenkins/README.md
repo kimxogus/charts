@@ -46,7 +46,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
 | `Master.JenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set                                               |
-| `Master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 2048Mi}}`|
+| `Master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 4096Mi}}`|
 | `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                  |
 | `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                  |
 | `Master.UsePodSecurityContext`    | Enable pod security context (must be `true` if `RunAsUser` or `FsGroup` are set) | `true`                           |
@@ -102,9 +102,14 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.CustomConfigMap`          | Deprecated: Use a custom ConfigMap               | `false`                                                                      |
 | `Master.AdditionalConfig`         | Deprecated: Add additional config files         | `{}`
 | `Master.JenkinsUriPrefix`         | Root Uri Jenkins will be served on         | Not set
+| `Master.customInitContainers`     | Custom init-container specification in raw-yaml format | Not set
+| `Master.lifecycle`              | Lifecycle specification for master-container | Not set
+| `Master.PriorityClassName`        | The name of a `PriorityClass` to apply to the Master pod | Not set                                                  |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `networking.k8s.io/v1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.serviceAccountName`         | Name of service account     | `default` |
+| `rbac.serviceAccountAnnotations`  | Service Account annotations | `{}` |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 | `rbac.roleKind`            | Role kind (`Role` or `ClusterRole`)| `ClusterRole`
 | `rbac.roleBindingKind`            | Role binding kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
