@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/init-config: {{ print (include "config-redis.conf" .) (include "config-init.sh" .) | sha256sum }}
+        checksum/init-config: {{ print (include "config-redis.conf" .) (include "config-init.sh" .) (include "redis-pre-stop.sh" .) | sha256sum }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
@@ -155,7 +155,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - redis-server 
+        - redis-server
         args:
         - /data/conf/redis.conf
         env:
@@ -174,12 +174,21 @@ spec:
           tcpSocket:
             port: {{ .Values.redis.port }}
           initialDelaySeconds: 15
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sh
+              - /readonly-config/pre-stop.sh
         resources:
 {{ toYaml .Values.redis.resources | indent 10 }}
         ports:
         - name: redis
           containerPort: {{ .Values.redis.port }}
         volumeMounts:
+        - name: config
+          mountPath: /readonly-config
+          readOnly: true
         - mountPath: /data
           name: data
       - name: sentinel

@@ -3,7 +3,7 @@
 ##
 image:
   repository: redis
-  tag: 5.0.6-alpine
+  tag: 5.0.7-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3

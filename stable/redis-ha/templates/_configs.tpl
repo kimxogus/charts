@@ -87,7 +87,7 @@
         echo "Attempting to find master"
         if [ "$(redis-cli -h "$MASTER"{{ if .Values.auth }} -a "$AUTH"{{ end }} ping)" != "PONG" ]; then
            echo "Can't ping master, attempting to force failover"
-           if redis-cli -h "$SERVICE" -p "$SENTINEL_PORT" sentinel failover "$MASTER_GROUP" | grep -q 'NOGOODSLAVE' ; then 
+           if redis-cli -h "$SERVICE" -p "$SENTINEL_PORT" sentinel failover "$MASTER_GROUP" | grep -q 'NOGOODSLAVE' ; then
                setup_defaults
                return 0
            fi
@@ -129,6 +129,45 @@
     fi
 
     echo "Ready..."
+{{- end }}
+
+{{- define "redis-pre-stop.sh" }}
+    HOSTNAME="$(hostname)"
+    INDEX="${HOSTNAME##*-}"
+    MASTER="$(redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ template "redis-ha.masterGroupName" . }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+    MASTER_GROUP="{{ template "redis-ha.masterGroupName" . }}"
+    REDIS_PORT={{ .Values.redis.port }}
+    SENTINEL_PORT={{ .Values.sentinel.port }}
+    SERVICE={{ template "redis-ha.fullname" . }}
+    set -eu
+
+    find_new_master() {
+        local code=$(redis-cli -h "$SERVICE" -p "$SENTINEL_PORT" sentinel failover "$MASTER_GROUP" | grep -q 'NOGOODSLAVE')
+        sleep 10
+        if $code ; then
+          return 0
+        fi
+        MASTER="$(redis-cli -h $SERVICE -p $SENTINEL_PORT sentinel get-master-addr-by-name $MASTER_GROUP | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+        if [ ! "$MASTER" ]; then
+          echo "Could not failover, exiting..."
+          exit 1
+        fi
+    }
+
+    echo "Force failover if this is master node.."
+
+    ANNOUNCE_IP=$(getent hosts "$SERVICE-announce-$INDEX" | awk '{ print $1 }')
+    echo 'master is ' $MASTER
+    echo 'this is ' $ANNOUNCE_IP
+    if [ -z "$ANNOUNCE_IP" ]; then
+        "Could not resolve the announce ip for this pod"
+        exit 1
+    elif [ "$MASTER" == "$ANNOUNCE_IP" ]; then
+        echo "This is master, attempting to force failover"
+        find_new_master
+    fi
+
+    echo "Terminating pod..."
 {{- end }}
 
 {{- define "config-haproxy.cfg" }}
