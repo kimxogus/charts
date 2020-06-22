@@ -177,6 +177,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `master.customJenkinsLabels`      | Append Jenkins labels to the master  | `{}`                                      |
 | `master.jenkinsHome`              | Custom Jenkins home path             | `/var/jenkins_home`                       |
 | `master.jenkinsRef`               | Custom Jenkins reference path        | `/usr/share/jenkins/ref`                  |
+| `master.deploymentStrategy`       | If empty, Recreate when persistence.enabled is true and RollingUpdate when persistence.enabled is false. | Not set |
 | `master.jenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set            |
 | `master.jenkinsUrlProtocol`       | Set protocol for JenkinsLocationConfiguration.xml | Set to `https` if `Master.ingress.tls`, `http` otherwise |
 | `master.jenkinsUriPrefix`         | Root Uri Jenkins will be served on   | Not set                                   |

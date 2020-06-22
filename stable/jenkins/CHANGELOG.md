@@ -119,13 +119,13 @@ Add support for overriding Ingress paths via `master.ingress.paths`
 
 ## 1.20.0
 
-  Add the following options for configuring the Kubernetes plugin.
+Add the following options for configuring the Kubernetes plugin.
 
- - master.slaveDefaultsProviderTemplate
- - master.slaveJenkinsUrl
- - master.slaveJenkinsTunnel
- - master.slaveConnectTimeout
- - master.slaveReadTimeout
+- master.slaveDefaultsProviderTemplate
+- master.slaveJenkinsUrl
+- master.slaveJenkinsTunnel
+- master.slaveConnectTimeout
+- master.slaveReadTimeout
 
 ## 1.19.0
 
@@ -287,6 +287,7 @@ Scriptapprovals are overwritten when overwriteConfig is enabled
 Added documentation for `persistence.storageClass`.
 
 ## 1.9.9
+
 Make `master.deploymentAnnotation` configurable.
 
 ## 1.9.8
@@ -295,13 +296,13 @@ Make `agent.slaveConnectTimeout` configurable: by increasing this value Jenkins 
 
 ## 1.9.7 Update plugin versions
 
-plugin                | old version | new version
---------------------- | ----------- | ----------
-kubernetes            | 1.18.2      | 1.21.2
-workflow-job          | 2.33        | 2.36
-credentials-binding   | 1.19        | 1.20
-git                   | 3.11.0      | 4.0.0
-configuration-as-code | 1.27        | 1.32
+| plugin                | old version | new version |
+| --------------------- | ----------- | ----------- |
+| kubernetes            | 1.18.2      | 1.21.2      |
+| workflow-job          | 2.33        | 2.36        |
+| credentials-binding   | 1.19        | 1.20        |
+| git                   | 3.11.0      | 4.0.0       |
+| configuration-as-code | 1.27        | 1.32        |
 
 ## 1.9.6
 
